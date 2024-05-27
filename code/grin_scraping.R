@@ -41,13 +41,12 @@ css_text <- c("h1",
 
 # Need to do this because R keeps bugging
 total_list <- readRDS("~/OneDrive - University of Exeter/data/grin/grin_db_l.RDS")
-# ^^ Was 189332 elements
 text.l <- list()
 # Was starting at 1 but now that R is crashing every so often I am started from
 # wherever I left off
 ul <- unlist(total_list)
 ids <- c((as.numeric(max(ul[which(names(ul) == 'accession')]))+1):highest)
-for(i in 1:length(ids)){
+for(i in 1:10001){ # length(ids)
     url <- tryCatch(read_html(paste0(base, ids[i])),error = function(e) NULL)
     #Sys.sleep(.5)
     # Extracting each item in CSS text
@@ -71,12 +70,15 @@ for(i in 1:length(ids)){
     accession <- ids[i]
     DT <- cbind(accession, unlisted.text)
     total_list[[length(total_list)+1]] <- DT
-    # Save every 5,000 runs
-    if(i %in% seq(5000, 1000000, by = 5000)){
+    # Save every 1,000 runs, about every 1.5 hours
+    if(i %in% seq(2000, 1000000, by = 2000)){
       saveRDS(total_list, "~/OneDrive - University of Exeter/data/grin/grin_db_l.RDS")
+      print(Sys.time())
     }
 }
-
+# this is moving at a painful pace
+total_list[[length(total_list)]]$accession
+ids[1]
 saveRDS(total_list, "~/OneDrive - University of Exeter/data/grin/grin_db_l.RDS")
 
 total_DT <- data.table::rbindlist(total_list)
@@ -90,6 +92,7 @@ col.names <- c("heading", "taxonomy", "top_name", "cultivar", "origin",
                "narrative", "accession_name", "accession_type", "accession_group",
                "genus", "subgenus", "family", "subfamily", "tribe", "ipr", "common_name")
 colnames(DT_cut) <- c("accession",col.names)
+DT_cut <- unique(DT_cut)
 # if top name is non, cultivar
 saveRDS(DT_cut, "~/OneDrive - University of Exeter/data/grin/grin_db_cut.RDS")
 
