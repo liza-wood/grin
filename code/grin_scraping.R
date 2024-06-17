@@ -46,7 +46,8 @@ text.l <- list()
 # wherever I left off
 ul <- unlist(total_list)
 ids <- c((as.numeric(max(ul[which(names(ul) == 'accession')]))+1):highest)
-for(i in 1:10001){ # length(ids)
+
+for(i in 1:8000){ # length(ids)
     url <- tryCatch(read_html(paste0(base, ids[i])),error = function(e) NULL)
     #Sys.sleep(.5)
     # Extracting each item in CSS text
@@ -71,14 +72,12 @@ for(i in 1:10001){ # length(ids)
     DT <- cbind(accession, unlisted.text)
     total_list[[length(total_list)+1]] <- DT
     # Save every 1,000 runs, about every 1.5 hours
-    if(i %in% seq(2000, 1000000, by = 2000)){
-      saveRDS(total_list, "~/OneDrive - University of Exeter/data/grin/grin_db_l.RDS")
+    if(i %in% seq(2000, 100000, by = 2000)){
+      #saveRDS(total_list, "~/OneDrive - University of Exeter/data/grin/grin_db_l.RDS")
       print(Sys.time())
     }
 }
-# this is moving at a painful pace
-total_list[[length(total_list)]]$accession
-ids[1]
+  # this is moving at a painful pace
 saveRDS(total_list, "~/OneDrive - University of Exeter/data/grin/grin_db_l.RDS")
 
 total_DT <- data.table::rbindlist(total_list)

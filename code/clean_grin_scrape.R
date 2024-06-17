@@ -23,7 +23,6 @@ public_pattern <- paste(c('[Uu]niversity','USDA', 'Agric\\. Exp\\. Station',
 sort(unique(dt$accession_name[str_detect(dt$accession_name, public_pattern) &
     str_detect(dt$origin_country, "United States")]))
 
-pub_inventors
 
 ## Improvement status ----
 table(dt$improvement_status)
